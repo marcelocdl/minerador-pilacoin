@@ -11,8 +11,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.SneakyThrows;
-import org.springframework.messaging.simp.stomp.StompSessionHandler;
-import org.springframework.scheduling.annotation.Scheduled;
+
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -25,9 +24,9 @@ import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
+
 import java.util.Random;
-import java.util.TimerTask;
+
 
 @Service
 public class Mineracao {
@@ -41,13 +40,11 @@ public class Mineracao {
 
     public static class ThreadMiner implements Runnable{
 
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         LocalDateTime dataAtual;
 
         RegistraPilacoinService registraPila = new RegistraPilacoinService();
 
         String textoLog = "";
-        String caminho = "src/main/resources/";
 
         BigInteger numHash;
 
@@ -116,8 +113,65 @@ public class Mineracao {
 
     }
 
+    @SneakyThrows
+    private static void salvaLog(String text){
+        File arquivo;
+        FileWriter escritorArquivo;
+        BufferedWriter escritorBuffer;
 
-/*
+        try {
+            arquivo = new File("src/logs/log.txt");
+
+            if (!arquivo.exists()) {
+                arquivo.createNewFile();
+            }
+
+            escritorArquivo = new FileWriter(arquivo, true);
+            escritorBuffer = new BufferedWriter(escritorArquivo);
+
+            escritorBuffer.write(text);
+            escritorBuffer.newLine();
+
+            escritorBuffer.flush();
+            escritorArquivo.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String generateJSON(PilaCoin pilaCoin) {
+        String json = "";
+        try {
+            ObjectMapper om = new ObjectMapper();
+            om.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+            //om.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
+            json = om.writeValueAsString(pilaCoin);
+        } catch (JsonProcessingException e) {
+            System.out.println("Falha ao gerar JSON do pila coin!");
+            e.printStackTrace();
+        }
+
+        if (json.equals("")) {
+            throw new RuntimeException("JSON vazio!");
+        }
+        return json;
+    }
+
+
+}
+
+/*    private static String gerarF(int n){
+        StringBuilder sb = new StringBuilder();
+        for (int i =0; i< n;i++){
+            sb.append("f");
+        }
+
+        return sb.toString();
+}
+
+//private static final BigInteger DIFICULDADE = new BigInteger(gerarF(59), 16);
+
+
     @SneakyThrows
     public static void miner() {
 
@@ -183,64 +237,4 @@ public class Mineracao {
             }
         }
     }
-*/
-
-    @SneakyThrows
-    private static void salvaLog(String text){
-        File arquivo;
-        FileWriter escritorArquivo;
-        BufferedWriter escritorBuffer;
-
-        try {
-            arquivo = new File("src/logs/log.txt");
-
-            if (!arquivo.exists()) {
-                arquivo.createNewFile();
-            }
-
-            escritorArquivo = new FileWriter(arquivo, true);
-            escritorBuffer = new BufferedWriter(escritorArquivo);
-
-            escritorBuffer.write(text);
-            escritorBuffer.newLine();
-
-            escritorBuffer.flush();
-            escritorArquivo.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static String generateJSON(PilaCoin pilaCoin) {
-        String json = "";
-        try {
-            ObjectMapper om = new ObjectMapper();
-            om.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-            //om.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
-            json = om.writeValueAsString(pilaCoin);
-        } catch (JsonProcessingException e) {
-            System.out.println("Falha ao gerar JSON do pila coin!");
-            e.printStackTrace();
-        }
-
-        if (json.equals("")) {
-            throw new RuntimeException("JSON vazio!");
-        }
-        return json;
-    }
-
-
-}
-
-/*    private static String gerarF(int n){
-        StringBuilder sb = new StringBuilder();
-        for (int i =0; i< n;i++){
-            sb.append("f");
-        }
-
-        return sb.toString();
-}
-
-//private static final BigInteger DIFICULDADE = new BigInteger(gerarF(59), 16);
-
 */
