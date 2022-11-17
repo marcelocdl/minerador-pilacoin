@@ -23,7 +23,6 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import java.util.Random;
 
@@ -96,13 +95,17 @@ public class Mineracao {
                     numHash = new BigInteger(hash).abs();
 
                     if (numHash.compareTo(DIFICULDADE) < 0) {
-                        System.out.println("Minerou");
-                        System.out.println("----------------\n");
-                        System.out.println(pilaJson);
+                        System.out.println("\n ########### Minerou ##########");
                         textoLog = pilaJson+"\n";
                         registraPila.registraPila(pilaJson);
-                        salvaLog(textoLog);
-                        printDif = 1;
+
+                        if(registraPila.validaPilaCoin(mNumber) == true){
+                            System.out.println("-------- PILACOIN REGISTRADO E VALIDADO COM SUCESSO ------\n");
+                            salvaLog(textoLog);
+                            printDif = 1;
+                        }else{
+                            System.out.println("@@@ ERRO AO REGISTRAR PILACOIN @@@");
+                        }
 
                     } else {
                         tentativas++;
