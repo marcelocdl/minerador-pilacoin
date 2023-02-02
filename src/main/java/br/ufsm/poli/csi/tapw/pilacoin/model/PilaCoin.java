@@ -7,28 +7,36 @@ import org.springframework.cglib.core.Local;
 //import javax.persistence.Entity;
 //import javax.persistence.GeneratedValue;
 //import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-//@Entity
+@Entity
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
 @JsonPropertyOrder(alphabetic = true)
+@Table (name = "pila_coin")
 public class PilaCoin implements Serializable {
 
-  //  @Id
-  //  @GeneratedValue
+    @Id
+    @GeneratedValue
     private Long id;
+    @Transient
     private String idCriador;
     private Date dataCriacao;
     private byte[] chaveCriador;
     private byte[] assinaturaMaster;
-    private BigInteger nonce; //utilizar precisão de 128 bits
+    private String nonce; //utilizar precisão de 128 bits
+
+    private String status;
+
+    public PilaCoin(Object payload) {
+    }
 
     public Long getId() {
         return id;
@@ -70,11 +78,19 @@ public class PilaCoin implements Serializable {
         this.assinaturaMaster = assinaturaMaster;
     }
 
-    public BigInteger getNonce() {
+    public String getNonce() {
         return nonce;
     }
 
-    public void setNonce(BigInteger nonce) {
+    public void setNonce(String nonce) {
         this.nonce = nonce;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

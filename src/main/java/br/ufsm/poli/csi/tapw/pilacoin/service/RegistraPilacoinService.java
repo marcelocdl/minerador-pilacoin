@@ -1,22 +1,20 @@
 package br.ufsm.poli.csi.tapw.pilacoin.service;
 
 import br.ufsm.poli.csi.tapw.pilacoin.model.PilaCoin;
-import br.ufsm.poli.csi.tapw.pilacoin.model.UsuarioRest;
-import br.ufsm.poli.csi.tapw.pilacoin.utils.Util;
 import lombok.SneakyThrows;
 import org.springframework.http.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import javax.annotation.PostConstruct;
 import java.math.BigInteger;
 import java.net.URL;
-import java.security.KeyPair;
-import java.util.Base64;
+
 
 public class RegistraPilacoinService {
 
     private String enderecoServer = "srv-ceesp.proj.ufsm.br:8097";
+    //public static final String END_PILACOIN = "http://192.168.81.101:8080/pilacoin";
+
     public static final String END_PILACOIN = "http://srv-ceesp.proj.ufsm.br:8097/pilacoin";
 
     @SneakyThrows
@@ -34,29 +32,37 @@ public class RegistraPilacoinService {
                     .contentType(MediaType.APPLICATION_JSON).body(pilaCoinJson);
             resp = restTemplate.exchange(requestEntity, PilaCoin.class);
         }catch (RuntimeException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
         return resp.getStatusCode().equals(HttpStatus.OK);
     }
 
+    @SneakyThrows
+    public PilaCoin validaPilaCoin(BigInteger n){
 
-    public boolean validaPilaCoin(BigInteger n){
-
-        ResponseEntity<String> response = null;
+        ResponseEntity<PilaCoin> response = null;
         RestTemplate restTemplate = new RestTemplate();
 
+        PilaCoin pila = new PilaCoin();
+
         try {
-            response = restTemplate.getForEntity(END_PILACOIN+"/?nonce="+n, String.class);
+            response = restTemplate.getForEntity(END_PILACOIN+"/?nonce="+n, PilaCoin.class);
         } catch (HttpClientErrorException e) {
-            return false;
+            return pila;
         } catch (RuntimeException e) {
             e.printStackTrace();
         }
         if (response.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
-            return false;
+            return null;
         }
 
-        return response.getStatusCode().equals(HttpStatus.OK);
+        pila.setId(response.getBody().getId());
+        pila.setChaveCriador(response.getBody().getChaveCriador());
+        pila.setDataCriacao(response.getBody().getDataCriacao());
+        pila.setNonce(response.getBody().getNonce());
+        pila.setAssinaturaMaster(response.getBody().getAssinaturaMaster());
+
+        return pila;
 
     }
 
