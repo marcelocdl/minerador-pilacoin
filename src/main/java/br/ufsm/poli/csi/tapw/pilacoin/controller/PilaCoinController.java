@@ -1,12 +1,11 @@
 package br.ufsm.poli.csi.tapw.pilacoin.controller;
 
+import br.ufsm.poli.csi.tapw.pilacoin.dto.ColegasDTO;
 import br.ufsm.poli.csi.tapw.pilacoin.dto.TransacaoDTO;
-import br.ufsm.poli.csi.tapw.pilacoin.model.Colegas;
-import br.ufsm.poli.csi.tapw.pilacoin.model.PilaCoin;
+import br.ufsm.poli.csi.tapw.pilacoin.model.*;
 
 import br.ufsm.poli.csi.tapw.pilacoin.service.ColegasService;
 import br.ufsm.poli.csi.tapw.pilacoin.service.Mineracao;
-import br.ufsm.poli.csi.tapw.pilacoin.model.Log;
 import br.ufsm.poli.csi.tapw.pilacoin.service.PilaCoinService;
 import br.ufsm.poli.csi.tapw.pilacoin.service.TransferenciaService;
 import lombok.SneakyThrows;
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Random;
 
 @RestController
 @RequestMapping("/api")
@@ -61,9 +61,9 @@ public class PilaCoinController {
     }
 
     @GetMapping("/colegas")
-    public List<Colegas> getColegas(){
+    public List<ColegasDTO> getColegas(){
         try{
-            List<Colegas> colegasList = null;
+            List<ColegasDTO> colegasList = null;
             colegasList = this.colegasService.getColegas();
             return colegasList;
         }catch (Exception e ){
@@ -75,7 +75,7 @@ public class PilaCoinController {
     }
 
     @SneakyThrows
-    @GetMapping("/getPilacoin")
+    @GetMapping("/buscarPila")
     private List<PilaCoin> getPilas(){
 
         List<PilaCoin> pilas = null;
@@ -89,11 +89,26 @@ public class PilaCoinController {
     }
 
     @SneakyThrows
+    @GetMapping("/buscarNumPila")
+    private int getNumPilas(){
+
+        int num = 0;
+
+        try{
+            num = this.pilaService.getNumPilas();
+
+        }catch (Exception e ){
+            e.printStackTrace();
+        }
+        return num;
+    }
+
+    @SneakyThrows
     @PostMapping("/transferencia")
-    public boolean getUsuarios(@RequestBody TransacaoDTO transferencia){
+    public boolean getUsuarios(@RequestBody Transferencia transferencia){
         String msgResposta = "";
-        transferencia.setId(null);
-        transferencia.setIdBloco(0L);
+        transferencia.setId(new Random().nextLong());
+        transferencia.setIdBloco(Long.toString(MineracaoRet.idBloco));
 
         try{
             try{

@@ -24,7 +24,7 @@ public class ColegasService {
     ColegasRepository colegasRepository;
 
     @PostConstruct
-    public List<Colegas> getColegas() {
+    public List<ColegasDTO> getColegas() {
 
         RestTemplate restTemplate = new RestTemplate();
 
@@ -60,7 +60,7 @@ public class ColegasService {
         }
         else colegasRepository.saveAll(retorno);
 
-        return retorno;
+        return colegas;
 
     }
 

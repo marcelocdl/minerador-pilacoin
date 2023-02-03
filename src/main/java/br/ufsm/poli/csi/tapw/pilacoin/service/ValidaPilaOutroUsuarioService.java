@@ -93,6 +93,7 @@ public class ValidaPilaOutroUsuarioService {
             resp = restTemplate.exchange(requestEntity, String.class);
 
             if (resp.getStatusCode() == HttpStatus.OK){
+                System.out.println("Json pila validado->"+pilaJsonFinal);
                 return true;
             }
         }

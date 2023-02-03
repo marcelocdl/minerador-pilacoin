@@ -169,6 +169,7 @@ public class WebSocketClient {
         @SneakyThrows
         private void handleBlocoParaMinerar(Object o)  {
             Bloco bloco = (Bloco) o;
+            MineracaoRet.idBloco = bloco.getNumeroBloco();
             blocoService.mineraBloco(bloco);
 
             //validaService.validaPila(bloco);

@@ -11,6 +11,8 @@ public class MineracaoRet {
     public static BigInteger DIFICULDADE;
     public static PilaOutroRecebidoDTO PILA_RECEBIDO;
 
+    public static long idBloco;
+
     public static boolean mining = false;
 
     public static BigInteger getDIFICULDADE() {
@@ -28,5 +30,6 @@ public class MineracaoRet {
     public static void setPilaRecebido(PilaOutroRecebidoDTO pilaRecebido) {
         PILA_RECEBIDO = pilaRecebido;
     }
+
 
 }

@@ -103,6 +103,18 @@ public final class Util {
         return hashAssinatura;
     }
 
+    @SneakyThrows
+    public static byte[] generateSignature(String json) {
+        var rsa = Cipher.getInstance("RSA");
+        PrivateKey privateKey =
+                KeyFactory.getInstance("RSA")
+                        .generatePrivate(new PKCS8EncodedKeySpec(Util.leKeyPair().getPrivate().getEncoded()));
+
+        rsa.init(Cipher.ENCRYPT_MODE, privateKey);
+
+        return rsa.doFinal(Util.geraHash(json));
+    }
+
     public static String geraJson(Object o) {
         String json = "";
         try {
